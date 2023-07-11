@@ -7,6 +7,7 @@ import click
 @click.argument('table', type=str)
 @click.argument('path', type=str)
 def generate_create_statement(path, table):
+
     '''Takes a file with Integration Services Metada and transform in a SQL Create Statemet '''
     with open(path, 'r', encoding="utf8") as file:
         reader = csv.reader(file, delimiter='\t')
@@ -42,10 +43,39 @@ def generate_create_statement(path, table):
     with open("create.txt", "wt",encoding="utf8") as f:
         print(create_statement, file = f)
 
-if __name__ == "__main__":
-    generate_create_statement()
+@click.command()
+@click.argument('table', type=str)
+@click.argument('path', type=str)
+def generate_select_statement(path, table):
+    '''Takes a file with Integration Services Metada and transform in a SQL Create Statemet '''
+    with open(path, 'r', encoding="utf8") as file:
+        reader = csv.reader(file, delimiter='\t')
+        next(reader)  # Skip header row
 
-# Example usage
-# FilePath = 'sap.txt'
-# create_statement = generate_create_statement(FilePath,TableName)
-#
+        select_statement = f" SELECT \n"
+
+        for row in reader:
+            column_name = row[0].strip('"')
+            data_type = row[1].strip('"')
+            precision = int(row[2].strip('"'))
+            scale = int(row[3].strip('"'))
+            length = int(row[4].strip('"'))
+
+            select_statement += f'    "{column_name}",\n'
+
+        select_statement = select_statement.rstrip(',\n')  # Remove the last comma
+        select_statement += f' FROM "TESTMABELS.{table}" \n'
+
+    with open("select.txt", "wt",encoding="utf8") as f:
+        print(select_statement, file = f)
+
+
+def main():
+    generate_create_statement()
+    generate_select_statement()
+
+if __name__ == "__main__":
+    main()
+   
+
+
