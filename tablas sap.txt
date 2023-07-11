@@ -1,0 +1,14 @@
+OCRD --Clientes
+
+OPLN --Lista precios cabecera
+ITM1 --LIsta de precios detalle
+
+OINV --facturas cabecera 
+INV1 --facturas detalle
+
+ORCT --cobranzas cabecera
+RCT1 --cobranzas detalle 
+
+
+CRD1 --Direcciones entrega
+OCTG -- condiciones de pago

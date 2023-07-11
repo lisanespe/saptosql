@@ -1,16 +1,18 @@
+#!/usr/bin/python
+
 import csv
 import click
 
 @click.command()
-@click.option('--Table', type=str, prompt='Wich table?', help='Table name')
-@click.option('--Path', type=str, prompt='Wich path?')
-def generate_create_statement(Path, Table):
+@click.argument('table', type=str)
+@click.argument('path', type=str)
+def generate_create_statement(path, table):
     '''Takes a file with Integration Services Metada and transform in a SQL Create Statemet '''
-    with open(file_path, 'r', encoding="utf8") as file:
+    with open(path, 'r', encoding="utf8") as file:
         reader = csv.reader(file, delimiter='\t')
         next(reader)  # Skip header row
 
-        create_statement = "CREATE TABLE {Table} (\n"
+        create_statement = f"CREATE TABLE {table} (\n"
 
         for row in reader:
             column_name = row[0].strip('"')
@@ -37,7 +39,8 @@ def generate_create_statement(Path, Table):
             ',\n')  # Remove the last comma
         create_statement += "\n);"
 
-        return create_statement
+    with open("create.txt", "wt",encoding="utf8") as f:
+        print(create_statement, file = f)
 
 if __name__ == "__main__":
     generate_create_statement()
@@ -45,5 +48,4 @@ if __name__ == "__main__":
 # Example usage
 # FilePath = 'sap.txt'
 # create_statement = generate_create_statement(FilePath,TableName)
-# with open("create.txt", "wt",encoding="utf8") as f:
-#   print(create_statement, file = f)
+#
